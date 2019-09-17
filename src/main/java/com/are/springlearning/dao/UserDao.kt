@@ -20,6 +20,6 @@ interface UserDao : JpaRepository<TUserEntity, Int> {
             @Param("qAge") age: Int?,
             @Param("qGender") gender: Int?,
             @Param("qId") id: Int?
-    )
+    ) : Int
 
 }

@@ -3,6 +3,7 @@ package com.are.springlearning.service
 import com.are.springlearning.bean.ResponseBodyBean
 import com.are.springlearning.bean.TUserEntity
 import com.are.springlearning.dao.UserDao
+import com.are.springlearning.util.TextUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/admin/user/")
 class UserController @Autowired constructor(private val mUserDao: UserDao) {
 
+    /**
+     * 添加用户
+     * */
     @ResponseBody
     @PostMapping(path = ["add"])
     fun addUserPost(@ModelAttribute("user") userEntity: TUserEntity): ResponseBodyBean {
@@ -23,6 +27,9 @@ class UserController @Autowired constructor(private val mUserDao: UserDao) {
         }
     }
 
+    /**
+     * 以Id删除用户
+     * */
     @ResponseBody
     @GetMapping(path = ["deleteById"])
     fun deleteUserById(id : Int) : ResponseBodyBean{
@@ -32,6 +39,29 @@ class UserController @Autowired constructor(private val mUserDao: UserDao) {
             ResponseBodyBean()
         } else {
             ResponseBodyBean(-1, "Item doesn't exist")
+        }
+    }
+
+    /**
+     * 以Id更新用户
+     * */
+    @ResponseBody
+    @PostMapping(path = ["updateUserById"])
+    fun updateUserById(@ModelAttribute("user") userEntity: TUserEntity) : ResponseBodyBean{
+        if(TextUtil.isEmpty(userEntity.name)){
+            return ResponseBodyBean(-1, "UserName can not be null or empty")
+        }
+
+        if(!mUserDao.existsById(userEntity.id)){
+            return ResponseBodyBean(-1, "Item doesn't exist")
+        }
+
+        val affectedRows = mUserDao.updateUser(userEntity.name, userEntity.age, userEntity.gender, userEntity.id)
+        mUserDao.flush()
+        return if(affectedRows > 0){
+            ResponseBodyBean()
+        } else {
+            ResponseBodyBean(-1, "Update user failed")
         }
     }
 

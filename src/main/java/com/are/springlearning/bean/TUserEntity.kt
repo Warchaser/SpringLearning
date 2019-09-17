@@ -11,7 +11,7 @@ class TUserEntity {
     var id: Int = 0
     @get:Basic
     @get:Column(name = "name", nullable = false, length = 10)
-    var name: String? = null
+    var name: String = ""
     @get:Basic
     @get:Column(name = "age", nullable = true)
     var age: Int? = null
