@@ -12,16 +12,15 @@ class ResponseBodyBean {
     private var message = "success"
 
     @JsonProperty
-    private var body: Any? = null
+    private var body: Any? = ObjectMapper().createObjectNode()
 
     constructor() {
-        setBodyWithEmptyJson()
+
     }
 
     constructor(state: Int, message: String){
         this.state = state
         this.message = message
-        setBodyWithEmptyJson()
     }
 
     constructor(state: Int, message: String, body: Any) {
@@ -30,8 +29,4 @@ class ResponseBodyBean {
         this.body = body
     }
 
-    private fun setBodyWithEmptyJson(){
-        val mapper = ObjectMapper()
-        body = mapper.createObjectNode()
-    }
 }
