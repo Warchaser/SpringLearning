@@ -23,7 +23,7 @@ class UserController @Autowired constructor(private val mUserDao: UserDao) {
         return if (result?.name != null) {
             ResponseBodyBean()
         } else {
-            ResponseBodyBean(-1, "insert failed", "{}")
+            ResponseBodyBean(-1, "insert failed")
         }
     }
 

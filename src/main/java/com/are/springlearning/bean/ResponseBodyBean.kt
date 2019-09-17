@@ -2,7 +2,6 @@ package com.are.springlearning.bean
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.web.bind.annotation.ResponseBody
 
 class ResponseBodyBean {
 
@@ -16,13 +15,23 @@ class ResponseBodyBean {
     private var body: Any? = null
 
     constructor() {
-        val mapper = ObjectMapper()
-        body = mapper.createObjectNode()
+        setBodyWithEmptyJson()
+    }
+
+    constructor(state: Int, message: String){
+        this.state = state
+        this.message = message
+        setBodyWithEmptyJson()
     }
 
     constructor(state: Int, message: String, body: Any) {
         this.state = state
         this.message = message
         this.body = body
+    }
+
+    private fun setBodyWithEmptyJson(){
+        val mapper = ObjectMapper()
+        body = mapper.createObjectNode()
     }
 }
