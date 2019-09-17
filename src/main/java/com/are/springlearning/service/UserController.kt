@@ -1,12 +1,16 @@
 package com.are.springlearning.service
 
+import com.are.springlearning.bean.GetUsersWithIndexResp
 import com.are.springlearning.bean.ResponseBodyBean
 import com.are.springlearning.bean.TUserEntity
 import com.are.springlearning.dao.UserDao
 import com.are.springlearning.util.TextUtil
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
+import java.util.ArrayList
 
 @Controller
 @RequestMapping("/admin/user/")
@@ -63,6 +67,24 @@ class UserController @Autowired constructor(private val mUserDao: UserDao) {
         } else {
             ResponseBodyBean(-1, "Update user failed")
         }
+    }
+
+    /**
+     * 分页查询
+     * */
+    @ResponseBody
+    @GetMapping(path = ["getUsersByIndex"])
+    fun getUsersWithIndex(pageNum : Int, pageSize : Int) : ResponseBodyBean{
+        if(pageNum < 0 || pageSize <= 0){
+            return ResponseBodyBean(-1, "Parameters are not valid")
+        }
+
+        val pageable = PageRequest.of(pageNum, pageSize)
+        val pageSet : Page<TUserEntity> = mUserDao.findAll(pageable)
+
+        val body = GetUsersWithIndexResp(pageNum, pageSize, pageSet.isLast, ArrayList(pageSet.content))
+
+        return ResponseBodyBean(body)
     }
 
 }

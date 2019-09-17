@@ -18,6 +18,10 @@ class ResponseBodyBean {
 
     }
 
+    constructor(body: Any){
+        this.body = body
+    }
+
     constructor(state: Int, message: String){
         this.state = state
         this.message = message
