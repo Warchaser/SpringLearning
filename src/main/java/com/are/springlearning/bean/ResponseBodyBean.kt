@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 class ResponseBodyBean {
 
     @JsonProperty
-    private var state = 200
+    private var state = 0
 
     @JsonProperty
     private var message = "success"

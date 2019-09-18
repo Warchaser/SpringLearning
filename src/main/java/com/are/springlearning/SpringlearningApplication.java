@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.are.springlearning")
 public class SpringlearningApplication extends SpringBootServletInitializer {
 
     @Override

@@ -1,20 +1,31 @@
 package com.are.springlearning.bean
 
+import io.swagger.annotations.ApiModel
+import io.swagger.annotations.ApiModelProperty
 import javax.persistence.*
 import java.util.Objects
 
 @Entity
+@ApiModel(value = "用户")
 @Table(name = "t_user", schema = "learning_spring_boot", catalog = "")
-class TUserEntity {
+open class TUserEntity {
+
+    @ApiModelProperty(hidden = true)
     @get:Id
     @get:Column(name = "id", nullable = false)
     var id: Int = 0
+
+    @ApiModelProperty(value = "用户名")
     @get:Basic
     @get:Column(name = "name", nullable = false, length = 10)
     var name: String = ""
+
+    @ApiModelProperty(value = "年龄")
     @get:Basic
     @get:Column(name = "age", nullable = true)
     var age: Int? = null
+
+    @ApiModelProperty(value = "性别 0男 1 女")
     @get:Basic
     @get:Column(name = "gender", nullable = true)
     var gender: Int? = null
