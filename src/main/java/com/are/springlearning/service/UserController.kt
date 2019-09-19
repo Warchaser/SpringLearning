@@ -26,23 +26,24 @@ class UserController @Autowired constructor(private val mUserDao: UserDao) {
     @ResponseBody
     @PostMapping(path = ["add"])
     fun addUserPost(@ModelAttribute("user") userEntity: TUserEntity): ResponseBodyBean {
-        when {
+        val response : ResponseBodyBean
+        response = when {
             TextUtil.isEmpty(userEntity.name) -> {
-                return ResponseBodyBean(-1, "UserName can not be null or empty")
+                ResponseBodyBean(-1, "UserName can not be null or empty")
             }
             mUserDao.existsByName(userEntity.name) -> {
-                return ResponseBodyBean(-1, "User exists already")
+                ResponseBodyBean(-1, "User exists already")
             }
             userEntity.name.length > 10 -> {
-                return ResponseBodyBean(-1, "UserName's max length is 10")
+                ResponseBodyBean(-1, "UserName's max length is 10")
             }
             else -> {
                 userEntity.passwd = userEntity.passwd.trim()
 
                 if (TextUtil.isEmpty(userEntity.passwd)) {
-                    return ResponseBodyBean()
+                    ResponseBodyBean()
                 } else if (userEntity.passwd.length > 32) {
-                    return ResponseBodyBean(-1, "Password's max length is 32")
+                    ResponseBodyBean(-1, "Password's max length is 32")
                 }
 
                 val result = mUserDao.saveAndFlush(userEntity)
@@ -54,6 +55,7 @@ class UserController @Autowired constructor(private val mUserDao: UserDao) {
             }
         }
 
+        return response
     }
 
     /**
