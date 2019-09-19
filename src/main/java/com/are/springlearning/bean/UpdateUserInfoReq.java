@@ -1,13 +1,16 @@
 package com.are.springlearning.bean;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class UpdateUserInfoReq {
 
+    @ApiModelProperty(value = "id", dataType = "int", required = true)
     private int id;
 
-    private String name;
-
+    @ApiModelProperty(value = "年龄", dataType = "int", required = true)
     private int age;
 
+    @ApiModelProperty(value = "性别", dataType = "int", required = true)
     private int gender;
 
     public int getId() {
@@ -16,14 +19,6 @@ public class UpdateUserInfoReq {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getAge() {

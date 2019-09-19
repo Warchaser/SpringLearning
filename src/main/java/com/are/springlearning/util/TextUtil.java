@@ -7,7 +7,11 @@ public class TextUtil {
     }
 
     public static boolean isEmpty(CharSequence charSequence){
-        return charSequence == null || charSequence.length() == 0;
+        return isNull(charSequence) || charSequence.length() == 0;
+    }
+
+    public static boolean isNull(CharSequence charSequence){
+        return charSequence == null;
     }
 
 }

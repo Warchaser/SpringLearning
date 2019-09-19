@@ -15,10 +15,15 @@ open class TUserEntity {
     @get:Column(name = "id", nullable = false)
     var id: Int = 0
 
-    @ApiModelProperty(value = "用户名")
+    @ApiModelProperty(value = "用户名", required = true)
     @get:Basic
     @get:Column(name = "name", nullable = false, length = 10)
     var name: String = ""
+
+    @ApiModelProperty(value = "密码", required = true)
+    @get:Basic
+    @get:Column(name = "passwd", nullable = false, length = 32)
+    var passwd: String = ""
 
     @ApiModelProperty(value = "年龄")
     @get:Basic
@@ -41,6 +46,6 @@ open class TUserEntity {
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(id, name, age, gender)
+        return Objects.hash(id, name, age, gender, passwd)
     }
 }

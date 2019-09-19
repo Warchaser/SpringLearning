@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import springfox.documentation.annotations.ApiIgnore
 import java.util.ArrayList
 
 @Api(value = "管理员接口")
@@ -27,19 +26,41 @@ class UserController @Autowired constructor(private val mUserDao: UserDao) {
     @ResponseBody
     @PostMapping(path = ["add"])
     fun addUserPost(@ModelAttribute("user") userEntity: TUserEntity): ResponseBodyBean {
-        println("addUserPost")
-        val result = mUserDao.saveAndFlush(userEntity)
-        return if (result?.name != null) {
-            ResponseBodyBean()
-        } else {
-            ResponseBodyBean(-1, "insert failed")
+        when {
+            TextUtil.isEmpty(userEntity.name) -> {
+                return ResponseBodyBean(-1, "UserName can not be null or empty")
+            }
+            mUserDao.existsByName(userEntity.name) -> {
+                return ResponseBodyBean(-1, "User exists already")
+            }
+            userEntity.name.length > 10 -> {
+                return ResponseBodyBean(-1, "UserName's max length is 10")
+            }
+            else -> {
+                userEntity.passwd = userEntity.passwd.trim()
+
+                if (TextUtil.isEmpty(userEntity.passwd)) {
+                    return ResponseBodyBean()
+                } else if (userEntity.passwd.length > 32) {
+                    return ResponseBodyBean(-1, "Password's max length is 32")
+                }
+
+                val result = mUserDao.saveAndFlush(userEntity)
+                return if (result?.name != null) {
+                    ResponseBodyBean()
+                } else {
+                    ResponseBodyBean(-1, "insert failed")
+                }
+            }
         }
+
     }
 
     /**
      * 以Id删除用户
      * */
     @ApiOperation(value = "管理员删除用户", notes = "Id必填")
+    @ApiImplicitParam(name = "id", required = true)
     @ResponseBody
     @GetMapping(path = ["deleteById"])
     fun deleteUserById(id : Int) : ResponseBodyBean{
@@ -59,19 +80,11 @@ class UserController @Autowired constructor(private val mUserDao: UserDao) {
     @ResponseBody
     @PostMapping(path = ["updateUserById"])
     fun updateUserById(@ModelAttribute("user") userEntity: UpdateUserInfoReq) : ResponseBodyBean{
-        if(TextUtil.isEmpty(userEntity.name)){
-            return ResponseBodyBean(-1, "UserName can not be null or empty")
-        }
-
         if(!mUserDao.existsById(userEntity.id)){
             return ResponseBodyBean(-1, "Item doesn't exist")
         }
 
-        if(userEntity.name.length > 10){
-            return ResponseBodyBean(-1, "name's max length is 10.")
-        }
-
-        val affectedRows = mUserDao.updateUser(userEntity.name, userEntity.age, userEntity.gender, userEntity.id)
+        val affectedRows = mUserDao.updateUser(userEntity.age, userEntity.gender, userEntity.id)
         mUserDao.flush()
         return if(affectedRows > 0){
             ResponseBodyBean()
@@ -101,6 +114,31 @@ class UserController @Autowired constructor(private val mUserDao: UserDao) {
         val body = GetUsersWithIndexResp(pageNum, pageSize, pageSet.isLast, ArrayList(pageSet.content))
 
         return ResponseBodyBean(body)
+    }
+
+    /**
+     * 用户登陆
+     * */
+    @ApiOperation(value = "用户登陆")
+    @ResponseBody
+    @GetMapping(path = ["userLogin"])
+    @ApiImplicitParams(
+            ApiImplicitParam(name = "userName", value = "用户名", type = "String", required = true),
+            ApiImplicitParam(name = "passwd", value = "密码", type = "String", required = true)
+    )
+    fun login(userName : String, passwd : String) : ResponseBodyBean{
+
+        if(TextUtil.isEmpty(userName) || TextUtil.isEmpty(passwd)){
+            return ResponseBodyBean(-1, "UserName or Password is empty")
+        }
+
+        val result : TUserEntity? = mUserDao.findByNameAndPasswd(userName, passwd)
+
+        return if(result == null){
+            ResponseBodyBean(-1, "UserName or Password is not correct")
+        } else {
+            ResponseBodyBean()
+        }
     }
 
 }
