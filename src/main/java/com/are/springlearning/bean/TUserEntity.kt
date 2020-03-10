@@ -11,6 +11,7 @@ import java.util.Objects
 open class TUserEntity {
 
     @ApiModelProperty(hidden = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @get:Id
     @get:Column(name = "id", nullable = false)
     var id: Int = 0
